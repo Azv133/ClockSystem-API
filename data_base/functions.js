@@ -40,7 +40,7 @@ const select = async(table, fields = [], conditions = null) => {
             return results(null, false, 'Condiciones incorrectas');
         }
     }else{
-        return selectAll(table);
+        return selectAll(table, conditions);
     }
 }
 
@@ -140,9 +140,9 @@ const setConditions = ({fields, values, types = []}) => {
             if(types.length === fields.length){
                 conditionsString += index === 0 ? `${field} = '${values[index]}'` : `${types[index]} ${field} = '${values[index]}'`;
             }else{
-                conditionsString += index === 0 ? `${field} = ${values[index]}` : `AND ${field} = '${values[index]}'`;
+                conditionsString += index === 0 ? `${field} = '${values[index]}'` : `AND ${field} = '${values[index]}'`;
             }
-            conditionsString += index === (fields.length - 1) ? '' : ', ';
+            conditionsString += index === (fields.length - 1) ? '' : ' ';
         });
 
         return conditionsString;

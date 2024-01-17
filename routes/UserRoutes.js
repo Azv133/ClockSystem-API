@@ -10,5 +10,6 @@ router.get(`/${path}`, controller.getUsers)
 router.post(`/${path}`, controller.addUser)
 router.put(`/${path}/:id`, controller.updateUser)
 router.delete(`/${path}/:id`, controller.deleteUser)
+router.post(`/${path}/login`, controller.login)
 
 module.exports = router

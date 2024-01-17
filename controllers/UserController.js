@@ -7,7 +7,6 @@ exports.getUsers = async(req, res) => {
             usuarios: result
         });
     }else{
-        console.log(message);
         res.status(500).json({
             error: message
         });
@@ -48,6 +47,35 @@ exports.deleteUser = async (req, res) => {
         res.status(200).json({
             message: 'Usuario eliminado con éxito'
         });
+    }else{
+        res.status(500).json({
+            error: message
+        });
+    }
+};
+
+exports.login = async (req, res) => {
+    const {correo, contraseña} = req.body;
+    const conditions = {
+        fields: ['correo', 'contraseña'],
+        values: [correo, contraseña]
+    }
+    
+    const {result, status, message} = await Usuario.get([], conditions);
+
+    if(status){
+        if(result != null && result.length > 0){
+            res.status(200).json({
+                user: result[0],
+                status: true,
+                message: `Bienvenido al sistema de asistencia`,
+            });
+        }else{
+            res.status(200).json({
+                status: false,
+                message: 'Credenciales erróneas'
+            });
+        }
     }else{
         res.status(500).json({
             error: message
