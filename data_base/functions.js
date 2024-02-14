@@ -45,7 +45,6 @@ const select = async(table, fields = [], conditions = null) => {
 }
 
 const create = async(table, fields, values) => {
-    
     if(fields.length > 0 && values.length > 0 && fields.length === values.length){
         let query = `INSERT INTO ${table} (`;
         fields.forEach((field, index) => {
@@ -55,6 +54,8 @@ const create = async(table, fields, values) => {
         values.forEach((value, index) => {
             query += index === (values.length - 1) ? `'${value}' )` : `'${value}', `;
         });
+
+        console.log(query);
 
         try {
             const result = await db.query(query);
@@ -84,6 +85,8 @@ const update = async(table, fields, values, conditions) => {
             });
 
             const query = `UPDATE ${table} SET ${fieldsString} ${condtionsString}`;
+
+            console.log(query);
 
             try {
                 const result = await db.query(query);
@@ -124,7 +127,7 @@ const remove = async(table, conditions) => {
 
 const raw = async(query) => {
     try{
-        const result = db.query(query);
+        const result = await db.query(query);
         return results(result, true, 'Sentencia ejecutada correctamente');
     }catch (err){
         return results(null, false, `Error al ejectuar la sentencia: ${err.message}`);

@@ -7,10 +7,14 @@ const app = express()
 const port = process.env.PORT
 
 const userRouter = require('./routes/UserRoutes')
+const marcacionRouter = require('./routes/MarcacionRoutes')
 
 app.use(cors())
 app.use(express.json())
 app.use(userRouter)
+app.use(marcacionRouter)
+
+global.APP_NAME = 'ClockSystem';
 
 app.listen(port, () => {
     console.log('La aplicación está funcionando...')

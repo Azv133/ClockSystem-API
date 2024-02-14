@@ -4,7 +4,7 @@ const createModel = (table, fields) => {
     return {
         create: async (...values) => {
             const validFields = fields.slice(1);
-            const results = await create(table, validFields, values);
+            const results = await create(table, validFields, values[0]);
             return results;
         },
         getAll: async () => {
@@ -28,7 +28,7 @@ const createModel = (table, fields) => {
                 fields: [fields[0]],
                 values: [id]
             };
-            const result = await update(table, validFields, values, conditions);
+            const result = await update(table, validFields, values[0], conditions);
             return result;
         },
         delete: async (id) => {

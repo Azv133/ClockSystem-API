@@ -1,4 +1,6 @@
 const Usuario = require("../models/Usuario");
+const Empleado = require("../models/Empleado");
+const UserService = require("../services/UserService");
 
 exports.getUsers = async(req, res) => {
     const {result, status, message} = await Usuario.getAll();
@@ -65,9 +67,29 @@ exports.login = async (req, res) => {
 
     if(status){
         if(result != null && result.length > 0){
+            let qrStatus = true;
+
+            if( result[0].secret == null || result[0].secret == ""){ 
+                qrStatus = false;
+                result[0].secret = UserService.getSecret();
+                const { id_usuario, id_rol, id_empleado, id_rfid, correo, contraseña, estado, secret } = result[0];
+                const result_ = await Usuario.update(id_usuario, [id_rol, id_empleado, id_rfid, correo, contraseña, estado, secret]);
+
+                if(!result_.status){
+                    console.log(result_.message);
+                    res.status(500).json({
+                        status: false,
+                        message: 'Error Interno'
+                    });
+                }
+            }
+
+            const empleado = await Empleado.getById(result[0].id_empleado);
+
             res.status(200).json({
-                user: result[0],
+                user: {...result[0], nombres: empleado.result[0].nombres},
                 status: true,
+                qrStatus,
                 message: `Bienvenido al sistema de asistencia`,
             });
         }else{
@@ -82,3 +104,34 @@ exports.login = async (req, res) => {
         });
     }
 };
+
+exports.getQr = async(req, res) => {
+    const { email, secret } = req.body;
+    try{
+        const url = await UserService.generateQrLink(email, secret);
+
+        res.status(200).json({
+            url,
+            message: 'Qr generado',
+        });
+    }catch( error ) {
+        res.status(500).json({
+            url: null,
+            message: 'Error al generar el qr',
+        });
+    }
+}
+
+exports.compareToken = (req, res) => {
+
+    const { code, secret } = req.body;
+
+    const status = UserService.equalToken(code, secret);
+
+    let message = status ? 'Código válido!' : 'Código incorrecto';
+
+    res.status(200).json({
+        status,
+        message
+    });
+}

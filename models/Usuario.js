@@ -7,7 +7,8 @@ const Usuario = createModel('Usuario', [
     'id_rfid',
     'correo',
     'contraseña',
-    'estado'
+    'estado',
+    'secret',
 ]);
 
 module.exports = Usuario;
