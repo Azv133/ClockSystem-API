@@ -1,5 +1,6 @@
 const Usuario = require("../models/Usuario");
 const Empleado = require("../models/Empleado");
+const Tarjeta_RFID = require("../models/Tarjeta_RFID");
 const UserService = require("../services/UserService");
 
 exports.getUsers = async(req, res) => {
@@ -59,14 +60,30 @@ exports.deleteUser = async (req, res) => {
 exports.login = async (req, res) => {
     const {correo, contraseña} = req.body;
     const conditions = {
-        fields: ['correo', 'contraseña'],
-        values: [correo, contraseña]
+        fields: ['correo'],
+        values: [correo]
     }
     
     const {result, status, message} = await Usuario.get([], conditions);
 
     if(status){
         if(result != null && result.length > 0){
+
+            let comp = null;
+
+            await UserService.comparePassword(contraseña, result[0].contraseña)
+                .then((result) => {
+                    comp = result;
+                })
+
+            if(!comp){
+                res.status(200).json({
+                    status: false,
+                    message: 'Credenciales erróneas'
+                });
+                return;
+            }
+
             let qrStatus = true;
 
             if( result[0].secret == null || result[0].secret == ""){ 
@@ -85,9 +102,10 @@ exports.login = async (req, res) => {
             }
 
             const empleado = await Empleado.getById(result[0].id_empleado);
+            const tarjetaRFID = await Tarjeta_RFID.getById(result[0].id_rfid);
 
             res.status(200).json({
-                user: {...result[0], nombres: empleado.result[0].nombres},
+                user: {...result[0], nombres: empleado.result[0].nombres, tarjetaRFID: tarjetaRFID.result[0].UID_tarjeta},
                 status: true,
                 qrStatus,
                 message: `Bienvenido al sistema de asistencia`,
