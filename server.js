@@ -2,6 +2,7 @@ const express = require('express')
 require('dotenv').config()
 const cors = require('cors')
 const db = require('./config/db')
+const db_mysql = require('./config/db_mysql')
 const app = express()
 
 const port = process.env.PORT
@@ -20,4 +21,4 @@ app.listen(port, () => {
     console.log('La aplicación está funcionando...')
 })
 
-db.connect()
+// db.connect()

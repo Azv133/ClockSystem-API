@@ -12,9 +12,11 @@ const getActualDate = () => {
 
     const formatedDate = (month < 10 ? '0' : '') + month + '-' + (day < 10 ? '0' : '') + day + '-' + year;
     const formatedFullDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
+    const formatedDate2 = year + '-' + (month < 10 ? '0' : '') + month + '-' + (day < 10 ? '0' : '') + day;
     
     return {
         ddmmyyyy: formatedDate,
+        yyyymmdd: formatedDate2,
         fullDate: formatedFullDate
     }
 }
@@ -34,9 +36,11 @@ const getDate = (date) => {
 
     const formatedDate = (month < 10 ? '0' : '') + month + '-' + (day < 10 ? '0' : '') + day + '-' + year;
     const formatedFullDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
-    
+    const formatedDate2 = year + '-' + (month < 10 ? '0' : '') + month + '-' + (day < 10 ? '0' : '') + day;
+
     return {
         ddmmyyyy: formatedDate,
+        yyyymmdd: formatedDate2,
         fullDate: formatedFullDate
     }
 }

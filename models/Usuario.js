@@ -6,7 +6,7 @@ const Usuario = createModel('Usuario', [
     'id_empleado',
     'id_rfid',
     'correo',
-    'contraseña',
+    'contrasena',
     'estado',
     'secret',
 ]);

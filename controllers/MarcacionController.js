@@ -5,11 +5,12 @@ const MarcacionResource = require('../resources/MarcacionResource');
 
 exports.getMarcaciones = async (req, res) => {
     const userId = req.params.id;
-    const { ddmmyyyy } = MarcacionService.getActualDate();
+    const { ddmmyyyy, yyyymmdd } = MarcacionService.getActualDate();
+    console.log(yyyymmdd);
 
     const conditions = {
         fields: ['id_usuario', 'fecha'],
-        values: [userId, ddmmyyyy]
+        values: [userId, yyyymmdd]
     };
 
     const {result, status, message} = await Marcacion.get([], conditions);
@@ -30,14 +31,14 @@ exports.getMarcaciones = async (req, res) => {
 exports.marcar = async (req, res) => {
     const { id_usuario, id_tipo_marcacion } = req.body;
     console.log({ id_usuario, id_tipo_marcacion })
-    const { ddmmyyyy, fullDate } = MarcacionService.getActualDate();
-    const query = `SELECT * FROM Marcacion WHERE id_usuario = ${id_usuario} AND fecha = '${ddmmyyyy}' ORDER BY marcacion_entrada DESC`;
+    const { ddmmyyyy, fullDate, yyyymmdd } = MarcacionService.getActualDate();
+    const query = `SELECT * FROM Marcacion WHERE id_usuario = ${id_usuario} AND fecha = '${yyyymmdd}' ORDER BY marcacion_entrada DESC`;
     const {result, status, message} = await raw(query);
     if(status){
         if(result.length > 0){
             const { id_marcacion, marcacion_entrada, marcacion_salida } = result[0];
             if(marcacion_salida){
-                const mResult = await MarcacionResource.create([id_usuario, fullDate, ddmmyyyy, id_tipo_marcacion]);
+                const mResult = await MarcacionResource.create([id_usuario, fullDate, yyyymmdd, id_tipo_marcacion]);
                 if(mResult.status){
                     res.status(200).json({
                         status: true,
@@ -51,7 +52,7 @@ exports.marcar = async (req, res) => {
                 }
             }else{
                 const mEntrada = MarcacionService.getDate(marcacion_entrada);
-                const mResult = await Marcacion.update(id_marcacion, [id_usuario, mEntrada.fullDate, fullDate, ddmmyyyy, id_tipo_marcacion]);
+                const mResult = await Marcacion.update(id_marcacion, [id_usuario, mEntrada.fullDate, fullDate, yyyymmdd, id_tipo_marcacion]);
                 if(mResult.status){
                     res.status(200).json({
                         status: true,
@@ -65,7 +66,7 @@ exports.marcar = async (req, res) => {
                 }
             }
         }else{
-            const mResult = await MarcacionResource.create([id_usuario, fullDate, ddmmyyyy, id_tipo_marcacion]);
+            const mResult = await MarcacionResource.create([id_usuario, fullDate, yyyymmdd, id_tipo_marcacion]);
             console.log(mResult);
             if(mResult.status){
                 res.status(200).json({

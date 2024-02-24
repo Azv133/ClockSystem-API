@@ -65,13 +65,12 @@ exports.login = async (req, res) => {
     }
     
     const {result, status, message} = await Usuario.get([], conditions);
-
     if(status){
         if(result != null && result.length > 0){
 
             let comp = null;
 
-            await UserService.comparePassword(contraseña, result[0].contraseña)
+            await UserService.comparePassword(contraseña, result[0].contrasena)
                 .then((result) => {
                     comp = result;
                 })
@@ -89,8 +88,8 @@ exports.login = async (req, res) => {
             if( result[0].secret == null || result[0].secret == ""){ 
                 qrStatus = false;
                 result[0].secret = UserService.getSecret();
-                const { id_usuario, id_rol, id_empleado, id_rfid, correo, contraseña, estado, secret } = result[0];
-                const result_ = await Usuario.update(id_usuario, [id_rol, id_empleado, id_rfid, correo, contraseña, estado, secret]);
+                const { id_usuario, id_rol, id_empleado, id_rfid, correo, contrasena, estado, secret } = result[0];
+                const result_ = await Usuario.update(id_usuario, [id_rol, id_empleado, id_rfid, correo, contrasena, estado, secret]);
 
                 if(!result_.status){
                     console.log(result_.message);

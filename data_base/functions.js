@@ -1,4 +1,5 @@
-const db = require('../config/db')
+//const db = require('../config/db')
+const db = require('../config/db_mysql')
 
 const selectAll = async(table, conditions = null) => {
 
